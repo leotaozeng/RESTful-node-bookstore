@@ -1,8 +1,30 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 
+const getBooks = async () => {
+  const books = await Book.find()
+
+  if (!books) {
+    throw (new Error('Something went wrong'))
+  } else {
+    return books
+  }
+}
+
+const getBookById = async (bookId) => {
+  const book = await Book.findById({
+    _id: bookId
+  })
+
+  if (!book) {
+    throw (new Error('Something went wrong'))
+  } else {
+    return book
+  }
+}
+
 // create a book schema
-let bookSchema = new Schema({
+const bookSchema = new Schema({
   title: {
     type: String,
     required: true
@@ -39,6 +61,5 @@ let bookSchema = new Schema({
 
 const Book = module.exports = mongoose.model('Book', bookSchema)
 
-module.exports.getBooks = (callback, limit) => {
-  Book.find(callback).limit(limit)
-}
+module.exports.getBooks = getBooks
+module.exports.getBookById = getBookById

@@ -5,7 +5,6 @@ require('./database')
 const app = express()
 const port = 3000
 
-const GenreModel = require('./models/genre')
 const apiRouter = require('./routes/api')
 
 app.use('/api', apiRouter)
