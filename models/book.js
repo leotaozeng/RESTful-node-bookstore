@@ -1,41 +1,7 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 
-// Get Books
-const getBooks = async () => {
-  const books = await Book.find()
-
-  if (!books) {
-    throw (new Error('Something went wrong'))
-  } else {
-    return books
-  }
-}
-
-// Get Book 
-const getBookById = async (bookId) => {
-  const book = await Book.findById({
-    _id: bookId
-  })
-
-  if (!book) {
-    throw (new Error('Something went wrong'))
-  } else {
-    return book
-  }
-}
-
-// Add Book
-const addBook = (book, callback) => {
-  Book
-    .create(book)
-    .then(doc => callback(doc))
-    .catch(err => {
-      throw (new Error(err))
-    })
-}
-
-// create a book schema
+// Define a schema
 const bookSchema = new Schema({
   title: {
     type: String,
@@ -71,8 +37,72 @@ const bookSchema = new Schema({
   }
 })
 
+// Get Books => GET
+const getBooks = (callback) => {
+  Book
+    .find()
+    .then(doc => callback(doc))
+    .catch(err => {
+      throw new Error(`Books NOT_FOUND: ${err}`)
+    })
+}
+
+// Get Book => GET
+const getBookById = (bookId, callback) => {
+  Book
+    .findById(bookId)
+    .then(doc => callback(doc))
+    .catch(err => {
+      throw new Error(`Book NOT_FOUND with id: ${err}`)
+    })
+}
+
+// Create Book => POST
+const createBook = (book, callback) => {
+  Book
+    .create(book)
+    .then(doc => callback(doc))
+    .catch(err => {
+      throw new Error(err)
+    })
+}
+
+// Update Book => PUT
+const updateBookById = (bookId, book, callback) => {
+  Book
+    .findByIdAndUpdate(
+      bookId,
+      book,
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+      },
+      callback
+    )
+    .then(doc => callback(doc))
+    .catch(err => console.error(err.message))
+}
+
+// Delete Book => DELETE
+const deleteBookById = (bookId, callback) => {
+  Book
+    .findByIdAndRemove(
+      bookId,
+      {
+        useFindAndModify: false
+      }
+    )
+    .then((doc) => callback(doc))
+    .catch(err => {
+      throw new Error(`Book NOT_FOUND with id: ${bookId} ${err}`)
+    })
+}
+
 const Book = module.exports = mongoose.model('Book', bookSchema)
 
 module.exports.getBooks = getBooks
 module.exports.getBookById = getBookById
-module.exports.addBook = addBook
+module.exports.createBook = createBook
+module.exports.updateBookById = updateBookById
+module.exports.deleteBookById = deleteBookById

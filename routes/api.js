@@ -1,43 +1,59 @@
 const express = require('express')
 const router = express.Router()
 
-const Genre = require('../models/genre')
-const Book = require('../models/book')
+const GenreModel = require('../models/genre')
+const BookModel = require('../models/book')
 
 router.get('/genres', (req, res) => {
-  Genre.getGenres((err, genres) => {
-    if (!err) {
-      res.json(genres)
-    }
-  })
+  GenreModel.getGenres(genres => res.json(genres))
 })
 
-router.post('/genres', async (req, res) => {
-  const genre = req.body
-  const newGenre = await Genre.addGenre(genre)
+router.get('/genres/:genreId', (req, res) => {
+  const { genreId } = req.params
 
-  res.json(newGenre)
+  GenreModel.getGenreById(genreId, genre => res.json(genre))
 })
 
-router.get('/books', async (req, res) => {
-  const books = await Book.getBooks()
-
-  res.json(books)
+router.post('/genres', (req, res) => {
+  GenreModel.createGenre(req.body, newGenre => res.json(newGenre))
 })
 
-router.get('/books/:bookId', async (req, res) => {
+router.put('/genres/:genreId', (req, res) => {
+  const { genreId } = req.params
+
+  GenreModel.updateGenreById(genreId, req.body, updatedGenre => res.json(updatedGenre))
+})
+
+router.delete('/genres/:genreId', (req, res) => {
+  const { genreId } = req.params
+
+  Genre.deleteGenreById(genreId, deletedGenre => res.json(deletedGenre))
+})
+
+router.get('/books', (req, res) => {
+  BookModel.getBooks((books) => res.json(books))
+})
+
+router.get('/books/:bookId', (req, res) => {
   const { bookId } = req.params
-  const book = await Book.getBookById(bookId)
 
-  res.json(book)
+  BookModel.getBookById(bookId, book => res.json(book))
 })
 
-router.post('/books', async (req, res) => {
-  const book = req.body
+router.post('/books', (req, res) => {
+  BookModel.createBook(req.body, newBook => res.json(newBook))
+})
 
-  Book.addBook(book, newBook => {
-    res.json(newBook)
-  })
+router.put('/books/:bookId', (req, res) => {
+  const { bookId } = req.params
+
+  BookModel.updateBookById(bookId, req.body, updatedBook => res.json(updatedBook))
+})
+
+router.delete('/books/:bookId', (req, res) => {
+  const { bookId } = req.params
+
+  BookModel.deleteBookById(bookId, deletedBook => res.json(deletedBook))
 })
 
 module.exports = router
