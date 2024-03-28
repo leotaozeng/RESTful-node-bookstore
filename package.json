@@ -10,7 +10,7 @@
   "author": "Leo Zeng",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.3",
+    "express": "^4.19.2",
     "mongoose": "^5.13.20"
   }
 }
